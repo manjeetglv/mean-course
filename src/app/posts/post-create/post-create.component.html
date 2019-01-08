@@ -1,0 +1,16 @@
+<mat-card>
+  <form>
+    <mat-form-field>
+      <input matInput placeholder="Title" [(ngModel)]="post.title">
+    </mat-form-field>
+    <mat-form-field>
+      <!-- One way data binding -->
+      <!-- <textarea rows="6" [value]="newPost" #postInput></textarea> -->
+      <!-- Two way data binding -->
+      <textarea matInput rows="6" [(ngModel)]="post.content" placeholder="Your post."></textarea>
+    </mat-form-field>
+    <button mat-raised-button color="accent" (click)="onAddPost(post)"> Save Post </button>
+  </form>
+</mat-card>
+
+<!-- <p>{{newPost}}</p> -->
