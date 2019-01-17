@@ -39,8 +39,20 @@ export class PostService {
     return this.postsUpdated.asObservable();
   }
 
+
   addPost(post: Post) {
-    this.http.post('http://localhost:3000/api/posts', post)
+    // Now we are updating the post methed to post file data as well
+    // Json does not allow to send the BLOB
+    // FormData() object provided by javascript
+    const postData = new FormData();
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    postData.append('image', post.image, post.title);
+
+    console.log('postData form post service', postData);
+    this.http.post('http://localhost:3000/api/posts',
+    // instead of post now we will send postData
+     postData)
     .subscribe( (responseData: Post) => {
       console.log(responseData);
       post._id = responseData._id;
