@@ -4,8 +4,10 @@ import { MatInputModule,
         MatCardModule,
         MatButtonModule,
         MatToolbarModule,
+        MatPaginatorModule,
         MatExpansionModule,
-        MatProgressSpinnerModule} from '@angular/material';
+        MatProgressSpinnerModule,
+        } from '@angular/material';
 
 @NgModule({
   declarations: [],
@@ -15,6 +17,7 @@ import { MatInputModule,
     MatCardModule,
     MatButtonModule,
     MatToolbarModule,
+    MatPaginatorModule,
     MatExpansionModule,
     MatProgressSpinnerModule
   ],
@@ -23,6 +26,7 @@ import { MatInputModule,
     MatCardModule,
     MatButtonModule,
     MatToolbarModule,
+    MatPaginatorModule,
     MatExpansionModule,
     MatProgressSpinnerModule]
 })

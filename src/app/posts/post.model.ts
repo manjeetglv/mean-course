@@ -3,5 +3,6 @@ export class Post {
   title: string;
   content: string;
   image: File;
+  imagePath?: string;
   constructor() {}
 }

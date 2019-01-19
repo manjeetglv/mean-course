@@ -1,5 +1,5 @@
 import { AbstractControl } from '@angular/forms';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, of } from 'rxjs';
 
 // Explation of Return type:
 // The following Arrow(=>) function can return either a Promise or a Observable.
@@ -8,6 +8,9 @@ import { Observable, Observer } from 'rxjs';
 // In Promise<{[key: string]: any}> or Observable<{[key: string]: any}> the [] is a  not array it is a syntax to tell that
 // the object will have a key which will be of type string.
 export const mimeType = (control: AbstractControl): Promise<{[key: string]: any}> | Observable<{[key: string]: any}> => {
+  if (typeof(control.value) === 'string') {
+   return of(null);
+  }
   const file = control.value as File;
   const fileReader = new FileReader();
   const frObs = Observable.create(( observer: Observer<{[key: string]: any}> ) => {

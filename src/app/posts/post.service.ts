@@ -3,7 +3,7 @@ import { Post } from './post.model';
 
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -11,15 +11,19 @@ import { Router } from '@angular/router';
 })
 export class PostService {
  private posts: Post[] = [];
- private postsUpdated = new Subject<Post[]>();
+ private postsUpdated = new Subject<{ posts: Post[], totalPosts: number}>();
   constructor(private http: HttpClient, private router: Router) { }
 
   getPost( postId: string) {
     return this.http.get<Post>('http://localhost:3000/api/posts/' + postId);
   }
 
-  getPosts() {
-    this.http.get<Post[]>('http://localhost:3000/api/posts')
+  getPosts(postsPerPage: number, currentPage: number) {
+    const params = new HttpParams()
+    .set('pageSize', postsPerPage.toString())
+    .set('currentPage', currentPage.toString());
+
+    this.http.get<{posts: Post[], totalPosts: number}>('http://localhost:3000/api/posts', {params: params})
     // .pipe(map(postData1 => {
     //   console.log(postData1);
     //   return postData1.map((post) => {
@@ -29,8 +33,8 @@ export class PostService {
     // }))
     .subscribe(
       (postData) => {
-        this.posts = postData;
-        this.postsUpdated.next([...this.posts]);
+        this.posts = postData.posts;
+        this.postsUpdated.next({posts: [...this.posts], totalPosts: postData.totalPosts});
       }
     );
   }
@@ -54,29 +58,30 @@ export class PostService {
     // instead of post now we will send postData
      postData)
     .subscribe( (responseData: Post) => {
-      console.log(responseData);
-      post._id = responseData._id;
-      this.posts.push(post);
-      this.postsUpdated.next([...this.posts]);
       this.router.navigate(['/']);
     });
   }
 
   updatePost(post: Post) {
-    this.http.put('http://localhost:3000/api/posts/' + post._id, post)
+    console.log('Post from update post *****', post);
+    let postData: Post | FormData;
+    if (typeof(post.image) !== 'string') {
+      postData = new FormData();
+      postData.append('title', post.title);
+      postData.append('content', post.content);
+      postData.append('image', post.image, post.title);
+      console.log('postData', postData);
+    } else {
+      postData = post;
+    }
+    this.http.put('http://localhost:3000/api/posts/' + post._id, postData)
     .subscribe( (responseData: Post) => {
-      const oldPostIndex = this.posts.findIndex(p => p._id === post._id);
-      this.posts[oldPostIndex] = post;
-      this.postsUpdated.next([...this.posts]);
       this.router.navigate(['/']);
     });
   }
 
   deletePost(postId: string): any {
-    this.http.delete('http://localhost:3000/api/posts/' + postId)
-    .subscribe((responseData) => {
-      this.getPosts();
-    });
+   return  this.http.delete('http://localhost:3000/api/posts/' + postId);
   }
 
 }

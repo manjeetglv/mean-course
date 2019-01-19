@@ -23,8 +23,9 @@ export class PostCreateComponent implements OnInit {
   constructor(private postService: PostService, private route: ActivatedRoute) { }
 
    onSavePost() {
+     console.log('Inside on Save post' );
      if ( this.postForm.invalid ) { return; }
-
+     console.log('Form is valid ');
     // this.postCreated.emit({title: postForm.value.title, content: postForm.value.content});
     this.isLoading = true;
     if (this.mode === 'create') {
@@ -66,7 +67,7 @@ export class PostCreateComponent implements OnInit {
           this.postService.getPost(this.postId).subscribe((post) => {
             this.isLoading = false;
             this.post = post;
-            this.postForm.setValue({title: post.title, content: post.content, image: 'NO-FILE'});
+            this.postForm.setValue({title: post.title, content: post.content, image: post.imagePath});
           });
         } else {
           this.mode = 'create';
