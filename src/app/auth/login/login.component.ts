@@ -20,7 +20,9 @@ export class LoginComponent implements OnInit {
     this.authData.email = loginForm.value.email;
     this.authData.password = loginForm.value.password;
 
-    this.authService.login(this.authData);
+    this.authService.login(this.authData).subscribe(null, error => {
+      this.isLoading = false;
+    });
   }
 
   ngOnInit() {

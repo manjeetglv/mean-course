@@ -4,5 +4,6 @@ export class Post {
   content: string;
   image: File;
   imagePath?: string;
+  creator?: string;
   constructor() {}
 }

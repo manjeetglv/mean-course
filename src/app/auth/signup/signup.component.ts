@@ -22,7 +22,11 @@ export class SignupComponent implements OnInit {
 
     this.authData.email = signupForm.value.email;
     this.authData.password = signupForm.value.password;
-    this.authService.createUser(this.authData);
+    this.authService.createUser(this.authData)
+    .subscribe(null, error => {
+      console.log('I am in component error');
+      this.isLoading = false;
+    } );
   }
 
   ngOnInit() {

@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { post } from 'selenium-webdriver/http';
 
 @Injectable({
   providedIn: 'root'
@@ -23,18 +24,27 @@ export class PostService {
     .set('pageSize', postsPerPage.toString())
     .set('currentPage', currentPage.toString());
 
-    this.http.get<{posts: Post[], totalPosts: number}>('http://localhost:3000/api/posts', {params: params})
-    // .pipe(map(postData1 => {
-    //   console.log(postData1);
-    //   return postData1.map((post) => {
+    this.http.get<{posts: any, totalPosts: number}>('http://localhost:3000/api/posts', {params: params})
+    // .pipe(map(postData => {
+    //   // console.log(postData);
+    //   return {
+    //     posts: postData.posts.map(post => {
     //     console.log(post);
-    //     return post;
-    //   });
+    //     return {
+    //       title: post.title,
+    //       content: post.content,
+    //       _id: post._id,
+    //       imagePath: post.imagePath,
+    //       creator: post.creator
+    //     };
+    //   }),
+    //   totalPosts: postData.totalPosts
+    // };
     // }))
     .subscribe(
-      (postData) => {
-        this.posts = postData.posts;
-        this.postsUpdated.next({posts: [...this.posts], totalPosts: postData.totalPosts});
+      (transformerPostData) => {
+        this.posts = transformerPostData.posts;
+        this.postsUpdated.next({posts: [...this.posts], totalPosts: transformerPostData.totalPosts});
       }
     );
   }
