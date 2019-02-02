@@ -5,7 +5,10 @@ import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { post } from 'selenium-webdriver/http';
+import { environment } from 'src/environments/environment';
+
+
+const BACKEND_URL = environment.apiUrl + 'posts/';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +19,7 @@ export class PostService {
   constructor(private http: HttpClient, private router: Router) { }
 
   getPost( postId: string) {
-    return this.http.get<Post>('http://localhost:3000/api/posts/' + postId);
+    return this.http.get<Post>(BACKEND_URL + postId);
   }
 
   getPosts(postsPerPage: number, currentPage: number) {
@@ -24,7 +27,7 @@ export class PostService {
     .set('pageSize', postsPerPage.toString())
     .set('currentPage', currentPage.toString());
 
-    this.http.get<{posts: any, totalPosts: number}>('http://localhost:3000/api/posts', {params: params})
+    this.http.get<{posts: any, totalPosts: number}>(BACKEND_URL, {params: params})
     // .pipe(map(postData => {
     //   // console.log(postData);
     //   return {
@@ -62,11 +65,11 @@ export class PostService {
     postData.append('title', post.title);
     postData.append('content', post.content);
     postData.append('image', post.image, post.title);
+    console.log(post.image);
 
     console.log('postData form post service', postData);
-    this.http.post('http://localhost:3000/api/posts',
     // instead of post now we will send postData
-     postData)
+    this.http.post(BACKEND_URL, postData)
     .subscribe( (responseData: Post) => {
       this.router.navigate(['/']);
     });
@@ -84,14 +87,14 @@ export class PostService {
     } else {
       postData = post;
     }
-    this.http.put('http://localhost:3000/api/posts/' + post._id, postData)
+    this.http.put(BACKEND_URL + post._id, postData)
     .subscribe( (responseData: Post) => {
       this.router.navigate(['/']);
     });
   }
 
   deletePost(postId: string): any {
-   return  this.http.delete('http://localhost:3000/api/posts/' + postId);
+   return  this.http.delete(BACKEND_URL + postId);
   }
 
 }

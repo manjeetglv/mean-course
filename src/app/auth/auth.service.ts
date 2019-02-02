@@ -6,6 +6,10 @@ import { AuthData } from './auth.model';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+import { environment } from 'src/environments/environment';
+
+const BACKEND_URL = environment.apiUrl + 'user/';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -57,7 +61,7 @@ export class AuthService {
    * @param authData It contains emaill and password.
    */
   createUser(authData: AuthData) {
-   return this.http.post('http://localhost:3000/api/user/signup', authData)
+   return this.http.post(BACKEND_URL + 'signup', authData)
     .pipe(tap(
       () => {
         this.router.navigate(['/']);
@@ -68,7 +72,7 @@ export class AuthService {
   }
 
   login(authData: AuthData) {
-   return this.http.post<{token: string, expiresIn: number, userId: string}> ('http://localhost:3000/api/user/login', authData)
+   return this.http.post<{token: string, expiresIn: number, userId: string}> (BACKEND_URL + 'login', authData)
     .pipe(tap( responseData => {
 
       // Getting token from backend.
